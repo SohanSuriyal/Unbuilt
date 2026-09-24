@@ -1,0 +1,6 @@
+{
+  "name": "Unbuilt — Real-World Problems & Idea Commons",
+  "description": "An open commons for real-world problems and viable unbuilt ideas. Vote on feasibility, link prerequisites, match skills, and form builder teams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
