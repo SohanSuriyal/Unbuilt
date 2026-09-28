@@ -7,6 +7,7 @@ interface SubmitIdeaModalProps {
   onClose: () => void;
   existingIdeas: Idea[];
   onSubmitIdea: (newIdea: Idea) => void;
+  initialCategory?: string;
 }
 
 const CATEGORIES = [
@@ -25,6 +26,7 @@ export const SubmitIdeaModal: React.FC<SubmitIdeaModalProps> = ({
   onClose,
   existingIdeas,
   onSubmitIdea,
+  initialCategory,
 }) => {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
@@ -32,7 +34,7 @@ export const SubmitIdeaModal: React.FC<SubmitIdeaModalProps> = ({
   const [title, setTitle] = useState('');
   const [tagline, setTagline] = useState('');
   const [type, setType] = useState<IdeaType>('problem');
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState(initialCategory || CATEGORIES[0]);
   const [complexity, setComplexity] = useState<IdeaComplexity>('1-Month MVP');
   const [authorName, setAuthorName] = useState('');
   const [authorHandle, setAuthorHandle] = useState('');
@@ -642,8 +644,8 @@ export const SubmitIdeaModal: React.FC<SubmitIdeaModalProps> = ({
                     onChange={(e) => setPrereqRelationship(e.target.value as PrerequisiteLink['relationship'])}
                     className="rounded-md border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-xs text-neutral-200 focus:border-amber-400 focus:outline-none"
                   >
-                    <option value="blocked_by">Blocked by (needs it first)</option>
-                    <option value="prerequisite_for">Prerequisite for</option>
+                    <option value="blocked_by">Requires (needs target idea first)</option>
+                    <option value="prerequisite_for">Unlocks (target idea depends on this)</option>
                     <option value="child_of">Child module of</option>
                     <option value="alternative_to">Alternative approach to</option>
                     <option value="related">Related idea</option>

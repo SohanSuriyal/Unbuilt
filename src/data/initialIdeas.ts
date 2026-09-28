@@ -604,7 +604,13 @@ export const INITIAL_IDEAS: Idea[] = [
       { skill: 'Web Developer', roleDescription: 'Build the zero-friction QR checkout and inventory status board', filledCount: 1, targetCount: 1 },
       { skill: 'Operations / Building Organizer', roleDescription: 'Manage tool sourcing and building board approval', filledCount: 0, targetCount: 1 }
     ],
-    prerequisites: [],
+    prerequisites: [
+      {
+        targetId: 'problem-right-to-repair-exploded-views',
+        relationship: 'blocked_by',
+        note: 'Requires standardized maintenance & disassembly diagrams to safely service communal equipment.'
+      }
+    ],
     votes: {
       goodIdea: 188,
       feasible: 220,
@@ -629,6 +635,541 @@ export const INITIAL_IDEAS: Idea[] = [
         }
       ]
     },
+    discussions: []
+  },
+  {
+    id: 'problem-offline-mesh-protocol',
+    title: 'LoRa Off-Grid Disaster Mesh Protocol & Solar Radio Packet Relay',
+    type: 'idea',
+    tagline: 'Open-source $15 ESP32 LoRa radio mesh firmware for neighborhood emergency messaging without cellular networks.',
+    category: 'Public Safety & Infrastructure',
+    complexity: '1-Month MVP',
+    author: {
+      name: 'Kai Berg',
+      handle: '@kai_mesh',
+      role: 'Embedded Radio Engineer'
+    },
+    createdAt: '2026-09-05',
+    motivation: {
+      problemStatement:
+        'When hurricanes, earthquakes, or wildfires knock down cell towers, rescue coordination instantly reverts to shouting and chaotic manual paper logs.',
+      theGap:
+        'Satellite phones cost $1,500 with steep subscriptions; commercial radios lack digital structured packet routing. A $15 solar micro-repeater can bridge entire neighborhoods.',
+      whoItAffects: 'Disaster zone victims, community emergency response teams (CERT), rural firefighters.',
+      impactIfSolved: 'Guarantees resilient, decentralized telemetry and text dispatching when 100% of municipal grid power fails.'
+    },
+    feasibility: {
+      assessment:
+        'High. Built on Meshtastic / SX1262 LoRa modules. Transmits low-bitrate encrypted packet beacons over 915MHz/868MHz with zero cellular or internet infrastructure.',
+      suggestedStack: ['C++ / Arduino / ESP-IDF', 'Meshtastic', 'SX1262 LoRa', 'Solar MPPT charger'],
+      firstStep: 'Publish firmware build for Heltec V3 ESP32 boards with automated packet hopping.',
+      pitfallsAndChallenges: 'Radio spectrum duty cycle constraints and RF antenna line-of-sight propagation.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Amateur Ham Radio', description: 'Requires FCC licensing exams and heavy, power-hungry equipment.' },
+        { name: 'Starlink Satellite', description: 'Requires heavy 100W power draw and expensive terminals.' }
+      ],
+      whyTheyFallShort: 'Neither is ultra-cheap, disposable, or able to run for weeks on a tiny $8 solar panel.'
+    },
+    skillsNeeded: [
+      { skill: 'Embedded / Hardware', roleDescription: 'Optimize RF packet hop algorithm and power states', filledCount: 1, targetCount: 1 },
+      { skill: 'Firmware Engineer', roleDescription: 'Implement packet crypto and Bluetooth LE bridge', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [],
+    votes: { goodIdea: 195, feasible: 168, haveThisProblem: 84, wantToBuild: 52 },
+    userVotes: { goodIdea: true, feasible: true },
+    team: {
+      status: 'team_forming',
+      members: [
+        { id: 'mem-mesh-1', name: 'Kai Berg', handle: '@kai_mesh', role: 'Radio Lead', skill: 'Embedded / Hardware', joinedAt: '2026-09-05' }
+      ]
+    },
+    discussions: []
+  },
+  {
+    id: 'idea-mass-casualty-mesh-coordinator',
+    title: 'Autonomous Mass-Casualty Mesh Triage Dispatcher',
+    type: 'idea',
+    tagline: 'Converged incident command console syncing patient vitals across field responders via decentralized mesh radio.',
+    category: 'Health & Public Safety',
+    complexity: 'Multi-Month Project',
+    author: {
+      name: 'Dr. Tariq Mansour',
+      handle: '@tmansour_md',
+      role: 'Emergency Medicine Physician'
+    },
+    createdAt: '2026-09-06',
+    motivation: {
+      problemStatement:
+        'During mass-casualty incidents (train derailments, building collapses), incident command boards lose track of patient triage tags (Immediate / Delayed / Minor) because field medics cannot relay updates to central triage.',
+      theGap:
+        'Medics have patient NFC data, and dispatchers have radios, but no software synthesizes patient scans and radio mesh into a real-time live triage board without cloud servers.',
+      whoItAffects: 'Field triage officers, trauma surgeons, ambulance fleet chiefs.',
+      impactIfSolved: 'Reduces time-to-surgery by 40% and ensures red-tag critical patients are prioritized for the nearest suitable trauma hospital.'
+    },
+    feasibility: {
+      assessment:
+        'Fully feasible. A browser-native PWA that pairs via Bluetooth with a pocket LoRa radio puck and decodes emergency NFC cards to broadcast encrypted triage packets.',
+      suggestedStack: ['React PWA', 'WebBluetooth API', 'WebNFC', 'Local SQLite / CRDT', 'Tailwind CSS'],
+      firstStep: 'Build WebBluetooth bridge to listen to incoming LoRa triage packets and render live triage queue.',
+      pitfallsAndChallenges: 'Maintaining state consistency across partition-tolerant mesh networks with high packet loss.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Physical Paper SMART Triage Tags', description: 'Paper tags attached to wrists; must be physically inspected by runners.' },
+        { name: 'Enterprise FirstNet Portals', description: 'Requires LTE cell towers that are congested or damaged during disasters.' }
+      ],
+      whyTheyFallShort: 'Paper cannot communicate across incident perimeters, and LTE collapses under disaster load.'
+    },
+    skillsNeeded: [
+      { skill: 'Frontend Architecture', roleDescription: 'Design responsive high-contrast triage board with audio cues', filledCount: 0, targetCount: 1 },
+      { skill: 'Distributed Systems / CRDT', roleDescription: 'Implement mesh state synchronization over low-bandwidth packets', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-medical-nfc-card',
+        relationship: 'blocked_by',
+        note: 'Requires the standardized 480-byte emergency medical NFC schema.'
+      },
+      {
+        targetId: 'idea-offline-triage-reader',
+        relationship: 'blocked_by',
+        note: 'Consumes triage scans generated by the field paramedic reader.'
+      },
+      {
+        targetId: 'problem-offline-mesh-protocol',
+        relationship: 'blocked_by',
+        note: 'Relies on the off-grid LoRa mesh transport to transmit without cell towers.'
+      }
+    ],
+    votes: { goodIdea: 242, feasible: 135, haveThisProblem: 91, wantToBuild: 48 },
+    userVotes: { goodIdea: true },
+    team: { status: 'open_for_builders', members: [] },
+    discussions: []
+  },
+  {
+    id: 'idea-er-capacity-beacon',
+    title: 'Hospital Trauma ER Live Bed & Blood Reserves Radio Beacon',
+    type: 'idea',
+    tagline: 'Direct-to-ambulance radio broadcast of real-time ER surgical suite availability and blood bank supplies.',
+    category: 'Health & Public Safety',
+    complexity: '1-Month MVP',
+    author: {
+      name: 'Sarah Chen',
+      handle: '@chen_paramedic',
+      role: 'Flight Paramedic'
+    },
+    createdAt: '2026-09-07',
+    motivation: {
+      problemStatement:
+        'Ambulances transport critical patients to the closest hospital only to find its CT scanner is down or the O-negative blood supply is depleted, forcing immediate secondary transport.',
+      theGap:
+        'Hospitals know their live status, but transmit it through clunky state regional web portals that paramedics in transit cannot access.',
+      whoItAffects: 'Trauma patients in transit, dispatch operators, ER triage directors.',
+      impactIfSolved: 'Routes ambulances directly to facilities with available operating suites and blood reserves on the first trip.'
+    },
+    feasibility: {
+      assessment:
+        'Low-cost radio beacon broadcasting a 64-byte signed telemetry string every 30 seconds containing bed, CT, and blood status.',
+      suggestedStack: ['Embedded / LoRa', 'React Dashboard', 'Open Health Beacon Schema'],
+      firstStep: 'Standardize 64-byte ER status bitfield payload.',
+      pitfallsAndChallenges: 'Hospital administrative approval for live capability broadcasts.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Regional Web Dashboards (EMResource)', description: 'Requires desktop logins, rarely updated in real-time by busy nurses.' },
+        { name: 'Voice Radio Check-ins', description: 'Ties up dispatch frequencies with verbal updates.' }
+      ],
+      whyTheyFallShort: 'Neither provides zero-latency passive heads-up display inside moving ambulances.'
+    },
+    skillsNeeded: [
+      { skill: 'Health Informatics Specialist', roleDescription: 'Ensure compliance with HIPAA while streaming non-PHI resource data', filledCount: 0, targetCount: 1 },
+      { skill: 'Mobile / PWA Dev', roleDescription: 'Build in-cab HUD map showing real-time hospital beacons', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'idea-mass-casualty-mesh-coordinator',
+        relationship: 'blocked_by',
+        note: 'Integrates directly with the field triage mesh coordinator to balance regional hospital intake.'
+      }
+    ],
+    votes: { goodIdea: 178, feasible: 144, haveThisProblem: 62, wantToBuild: 31 },
+    userVotes: { feasible: true },
+    team: { status: 'open_for_builders', members: [] },
+    discussions: []
+  },
+  {
+    id: 'idea-cargo-bike-relay',
+    title: 'Hyperlocal Cargo Bike Haul Router & Route Optimizer',
+    type: 'idea',
+    tagline: 'Dynamic volunteer cyclist dispatch system routing evening bakery pick-ups through neighborhood bike paths.',
+    category: 'Sustainability & Community',
+    complexity: 'Weekend Prototype',
+    author: {
+      name: 'Tomás Rivera',
+      handle: '@trivera',
+      role: 'Cyclist Volunteer'
+    },
+    createdAt: '2026-09-08',
+    motivation: {
+      problemStatement:
+        'Car drivers attempting bakery surplus pickups struggle with double parking and one-way streets, whereas cargo bikes complete urban deliveries 3x faster.',
+      theGap:
+        'Navigation apps optimize for automobiles, not cargo bikes carrying 40kg of sourdough through grade-separated cycleways.',
+      whoItAffects: 'Volunteer food rescue couriers, urban bakeries.',
+      impactIfSolved: 'Cuts food rescue transit time in half with zero tailpipe emissions.'
+    },
+    feasibility: {
+      assessment:
+        'Lightweight progressive web app utilizing OpenStreetMap and Valhalla routing engine with bicycle infrastructure weighting.',
+      suggestedStack: ['React', 'Leaflet', 'OpenStreetMap', 'Valhalla API'],
+      firstStep: 'Deploy route planner weighted for grade-separated bike paths and low slope gradients.',
+      pitfallsAndChallenges: 'Accurate bike infrastructure data in suburban districts.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Google Maps Cycling Mode', description: 'Routes onto high-speed multi-lane roads with narrow painted gutters.' }
+      ],
+      whyTheyFallShort: 'Not tailored for heavy cargo bikes carrying fragile baked goods.'
+    },
+    skillsNeeded: [
+      { skill: 'Frontend Developer', roleDescription: 'Build turn-by-turn cyclist HUD and pickup claim queue', filledCount: 1, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-bakery-food-surplus',
+        relationship: 'blocked_by',
+        note: 'Consumes surplus bakery dispatch alerts from participating bakeries and delis.'
+      }
+    ],
+    votes: { goodIdea: 164, feasible: 198, haveThisProblem: 55, wantToBuild: 44 },
+    userVotes: { feasible: true, wantToBuild: true },
+    team: {
+      status: 'team_forming',
+      members: [
+        { id: 'mem-cb-1', name: 'Tomás Rivera', handle: '@trivera', role: 'Cycle Lead', skill: 'Frontend Developer', joinedAt: '2026-09-08' }
+      ]
+    },
+    discussions: []
+  },
+  {
+    id: 'idea-cold-chain-locker',
+    title: 'Solar-Powered Insulated Porch Drop-Box with Smart SMS Lockers',
+    type: 'idea',
+    tagline: 'Autonomous insulated temperature-monitored community lockers for after-hours food bank drop-offs.',
+    category: 'Sustainability & Community',
+    complexity: '1-Month MVP',
+    author: {
+      name: 'Mateo Ortiz',
+      handle: '@mateo_civic',
+      role: 'Community Partner'
+    },
+    createdAt: '2026-09-09',
+    motivation: {
+      problemStatement:
+        'Bakeries close at 8 PM, but community shelters often lock doors at 7 PM, creating a 12-hour gap where food spoils on loading docks.',
+      theGap:
+        'Shelters lack overnight staff to receive deliveries, and commercial refrigerated lockers cost upwards of $12,000.',
+      whoItAffects: 'Volunteer delivery drivers, shelter staff, community kitchens.',
+      impactIfSolved: 'Provides a secure, verified 24/7 drop point ensuring uninterrupted food safety.'
+    },
+    feasibility: {
+      assessment:
+        'Re-purposing insulated shipping totes with 12V thermoelectric Peltier cooling and a solenoid latch driven by an ESP32 cell module.',
+      suggestedStack: ['ESP32', 'Peltier Cooler', 'Twilio SMS', 'React Admin Panel'],
+      firstStep: 'Construct prototype locker with SMS one-time passcode unlock and DS18B20 temperature logger.',
+      pitfallsAndChallenges: 'Maintaining sub-4°C cooling during peak summer heat waves.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Amazon Hub Lockers', description: 'Proprietary, non-insulated, strictly for commercial parcel deliveries.' }
+      ],
+      whyTheyFallShort: 'No temperature monitoring or community access protocol.'
+    },
+    skillsNeeded: [
+      { skill: 'Hardware Technician', roleDescription: 'Wire Peltier cooling, insulation foam, and solenoid lock', filledCount: 0, targetCount: 1 },
+      { skill: 'Backend / API', roleDescription: 'Handle SMS authentication webhook and temperature alerts', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-bakery-food-surplus',
+        relationship: 'blocked_by',
+        note: 'Provides physical receiving depots for late-night bakery hauls.'
+      }
+    ],
+    votes: { goodIdea: 182, feasible: 156, haveThisProblem: 71, wantToBuild: 38 },
+    userVotes: { goodIdea: true },
+    team: { status: 'open_for_builders', members: [] },
+    discussions: []
+  },
+  {
+    id: 'idea-zero-waste-neighborhood-network',
+    title: 'Zero-Waste Neighborhood Food Clearinghouse & Redistribution Hub',
+    type: 'idea',
+    tagline: 'Closed-loop municipal platform coordinating surplus food pickups, volunteer transport, and cold-storage lockers.',
+    category: 'Sustainability & Community',
+    complexity: 'Multi-Month Project',
+    author: {
+      name: 'Claire Dupont',
+      handle: '@claire_breads',
+      role: 'Artisan Bakery Owner'
+    },
+    createdAt: '2026-09-10',
+    motivation: {
+      problemStatement:
+        'Scaling food rescue from 3 friendly bakeries to an entire district of 80 grocers, cafes, and delis requires an end-to-end automated logistics orchestration platform.',
+      theGap:
+        'Without integrated routing and storage, excess food is either rejected or arrives spoiled because couriers have nowhere to drop off items.',
+      whoItAffects: 'City sustainability departments, food banks, independent grocers.',
+      impactIfSolved: 'Recovers over 20,000 lbs of edible food per neighborhood monthly.'
+    },
+    feasibility: {
+      assessment:
+        'A full-stack municipal orchestration engine that matches donor bakery listings with active cargo bike volunteers and reserves vacant locker slots in real-time.',
+      suggestedStack: ['React', 'Node.js / Express', 'PostGIS', 'WebSockets', 'Tailwind CSS'],
+      firstStep: 'Integrate the cargo bike routing API with locker availability telemetry.',
+      pitfallsAndChallenges: 'Balancing volunteer courier availability with fluctuating donor food volumes.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Spreadsheets & WhatsApp Groups', description: 'Manual, error-prone, and collapses as soon as volume exceeds 10 daily deliveries.' }
+      ],
+      whyTheyFallShort: 'Lacks automated real-time dispatch, route calculation, and storage reservation.'
+    },
+    skillsNeeded: [
+      { skill: 'Full-Stack Developer', roleDescription: 'Lead backend dispatch engine and database schema', filledCount: 0, targetCount: 1 },
+      { skill: 'UI/UX Design', roleDescription: 'Design clear multi-user status dashboard for bakeries, couriers, and shelters', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'idea-cargo-bike-relay',
+        relationship: 'blocked_by',
+        note: 'Requires volunteer cargo bike routing network for rapid haulage.'
+      },
+      {
+        targetId: 'idea-cold-chain-locker',
+        relationship: 'blocked_by',
+        note: 'Requires smart locker storage infrastructure for unattended distribution.'
+      }
+    ],
+    votes: { goodIdea: 228, feasible: 172, haveThisProblem: 88, wantToBuild: 56 },
+    userVotes: { goodIdea: true, wantToBuild: true },
+    team: { status: 'open_for_builders', members: [] },
+    discussions: []
+  },
+  {
+    id: 'problem-3d-cad-replacement-parts',
+    title: 'Open CAD Repository for Discontinued Appliance Wear Components',
+    type: 'idea',
+    tagline: 'Standardized parametric 3D-printable models for broken plastic gears, latches, and blender couplings.',
+    category: 'Hardware & Right-to-Repair',
+    complexity: '1-Month MVP',
+    author: {
+      name: 'Niko Bell',
+      handle: '@niko_repairs',
+      role: 'Independent Electronics Technician'
+    },
+    createdAt: '2026-09-02',
+    motivation: {
+      problemStatement:
+        'Manufacturers routinely declare 4-year-old washing machines and blenders "unrepairable" because a tiny $0.30 plastic gear snapped and OEM replacement parts are discontinued.',
+      theGap:
+        '3D printing can fabricate replacement nylon gears in 20 minutes, but models are scattered across Thingiverse, Printables, and obscure forums with no verification.',
+      whoItAffects: 'Consumers with broken appliances, repair cafes, trade school students.',
+      impactIfSolved: 'Extends appliance lifespans by 5-10 years and saves consumers hundreds in premature replacement costs.'
+    },
+    feasibility: {
+      assessment:
+        'A dedicated open-source repository of verified STEP/STL parametric files tagged by appliance brand, model number, and material spec (e.g. PETG, Nylon).',
+      suggestedStack: ['React', 'Three.js / STL viewer', 'PostgreSQL', 'Tailwind CSS'],
+      firstStep: 'Publish 50 verified CAD models for top 10 most common broken gears in KitchenAid and Oster appliances.',
+      pitfallsAndChallenges: 'Ensuring dimensional accuracy and thermal resilience of 3D-printed materials.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Thingiverse / Printables', description: 'General 3D printing sites full of decorative toys; impossible to search by appliance model number.' },
+        { name: 'AppliancePartsPros', description: 'Only sells expensive OEM injection-molded parts when still in stock.' }
+      ],
+      whyTheyFallShort: 'No verified mechanical tolerance grading or organized appliance compatibility ontology.'
+    },
+    skillsNeeded: [
+      { skill: 'CAD / Mechanical Engineer', roleDescription: 'Reverse engineer broken plastic gears using calipers and FreeCAD', filledCount: 1, targetCount: 2 },
+      { skill: 'Web Developer', roleDescription: 'Build in-browser 3D model inspector and appliance compatibility filter', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [],
+    votes: { goodIdea: 210, feasible: 185, haveThisProblem: 142, wantToBuild: 50 },
+    userVotes: { goodIdea: true, haveThisProblem: true },
+    team: {
+      status: 'team_forming',
+      members: [
+        { id: 'mem-cad-1', name: 'Niko Bell', handle: '@niko_repairs', role: 'Mechanical Lead', skill: 'CAD / Mechanical Engineer', joinedAt: '2026-09-02' }
+      ]
+    },
+    discussions: []
+  },
+  {
+    id: 'idea-community-repair-station',
+    title: 'Automated Community Repair Diagnostic Kiosk & Parts 3D-Print Station',
+    type: 'idea',
+    tagline: 'All-in-one public repair workshop unit combining diagnostic software, disassembly maps, and on-demand parts manufacturing.',
+    category: 'Hardware & Right-to-Repair',
+    complexity: 'Multi-Month Project',
+    author: {
+      name: 'Elena Rostova',
+      handle: '@elena_dev',
+      role: 'Lead Frontend'
+    },
+    createdAt: '2026-09-04',
+    motivation: {
+      problemStatement:
+        'People want to fix their broken items, but lack the tools, the exploded screw diagrams, and the specific replacement gear required.',
+      theGap:
+        'Repair requires three things in one place: the right tool (from a tool library), the disassembly guide (from an indexer), and the replacement component (from a CAD parts registry).',
+      whoItAffects: 'Apartment communities, maker spaces, public libraries.',
+      impactIfSolved: 'Makes right-to-repair fully accessible to everyday non-technical citizens.'
+    },
+    feasibility: {
+      assessment:
+        'A touchscreen kiosk installed inside a public library or tool hub, equipped with a calibrated 3D printer, precision bit set, and digital repair guidance.',
+      suggestedStack: ['React Kiosk PWA', 'OctoPrint API', 'WebUSB', 'Tailwind CSS'],
+      firstStep: 'Build unified search tying appliance model numbers to disassembly guides and printable parts.',
+      pitfallsAndChallenges: 'Print time (30-60 minutes per part) and kiosk hardware maintenance.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Standalone Maker Spaces', description: 'Expensive monthly memberships ($100+/mo), require specialized training.' }
+      ],
+      whyTheyFallShort: 'Not tailored for rapid, guided household appliance repair.'
+    },
+    skillsNeeded: [
+      { skill: 'Hardware Technician', roleDescription: 'Assemble and maintain kiosk 3D printer and precision tool set', filledCount: 0, targetCount: 1 },
+      { skill: 'Frontend Developer', roleDescription: 'Build intuitive touch-screen kiosk interface with step-by-step repair guides', filledCount: 1, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-right-to-repair-exploded-views',
+        relationship: 'blocked_by',
+        note: 'Loads exploded assembly diagrams and screw-length specifications.'
+      },
+      {
+        targetId: 'problem-3d-cad-replacement-parts',
+        relationship: 'blocked_by',
+        note: 'Sources verified printable STEP/STL models for broken mechanical components.'
+      },
+      {
+        targetId: 'idea-building-tool-library',
+        relationship: 'blocked_by',
+        note: 'Integrates with shared community locker infrastructure for specialized tool loans.'
+      }
+    ],
+    votes: { goodIdea: 265, feasible: 148, haveThisProblem: 175, wantToBuild: 68 },
+    userVotes: { goodIdea: true, wantToBuild: true },
+    team: {
+      status: 'team_forming',
+      members: [
+        { id: 'mem-kiosk-1', name: 'Elena Rostova', handle: '@elena_dev', role: 'UI Lead', skill: 'Frontend Developer', joinedAt: '2026-09-04' }
+      ]
+    },
+    discussions: []
+  },
+  {
+    id: 'idea-municipal-noise-packet-generator',
+    title: 'Automated Evidentiary 311 Citation Dossier Generator',
+    type: 'idea',
+    tagline: 'Generates court-admissible PDF violation dossiers with FFT spectrograms and calibrated decibel logs for code enforcement.',
+    category: 'Civic Infrastructure',
+    complexity: 'Weekend Prototype',
+    author: {
+      name: 'Rohan Joshi',
+      handle: '@rohan_civic',
+      role: 'Urban Planning Researcher'
+    },
+    createdAt: '2026-09-11',
+    motivation: {
+      problemStatement:
+        'Even when citizens log noise sensor data, municipal courts dismiss complaints because reports lack certified calibration stamps, environmental temperature corrections, or formal legal formatting.',
+      theGap:
+        'A sensor is only as good as the legal admissibility of its output packet in administrative court hearings.',
+      whoItAffects: 'Tenants suffering from illegal commercial noise, municipal code enforcement officers.',
+      impactIfSolved: 'Transforms raw acoustic sensor telemetry into binding legal citations with a single click.'
+    },
+    feasibility: {
+      assessment:
+        'A browser-based client that ingests sensor JSON timeseries data, calculates standard LAeq metrics, and generates a formatted PDF compliant with municipal evidence codes.',
+      suggestedStack: ['React', 'PDFKit / jsPDF', 'Chart.js', 'Tailwind CSS'],
+      firstStep: 'Create PDF layout template matching standard municipal noise violation complaint forms.',
+      pitfallsAndChallenges: 'Varying statutory evidentiary standards across different city jurisdictions.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Manual Screenshot Logs', description: 'Ignored by court clerks for lack of certification.' }
+      ],
+      whyTheyFallShort: 'Unformatted, lacking mathematical rigor and acoustic weighting metadata.'
+    },
+    skillsNeeded: [
+      { skill: 'Data Visualization & Timeseries', roleDescription: 'Generate acoustic spectrogram charts and decibel plots for PDF', filledCount: 0, targetCount: 1 },
+      { skill: 'Municipal Legal Advisor', roleDescription: 'Draft boilerplate affidavits matching city noise ordinances', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-civic-noise-grid',
+        relationship: 'blocked_by',
+        note: 'Processes calibrated continuous decibel telemetry from the acoustic sensor grid.'
+      }
+    ],
+    votes: { goodIdea: 158, feasible: 205, haveThisProblem: 118, wantToBuild: 37 },
+    userVotes: { feasible: true },
+    team: { status: 'open_for_builders', members: [] },
+    discussions: []
+  },
+  {
+    id: 'idea-acoustic-wildlife-corridor-tracker',
+    title: 'Urban Bird & Bat Acoustic Habitat Health Monitor',
+    type: 'idea',
+    tagline: 'Uses acoustic noise sensors to measure how industrial noise levels suppress migratory bird and pollinator activity.',
+    category: 'Civic Infrastructure',
+    complexity: '1-Month MVP',
+    author: {
+      name: 'Rohan Joshi',
+      handle: '@rohan_civic',
+      role: 'Urban Planning Researcher'
+    },
+    createdAt: '2026-09-13',
+    motivation: {
+      problemStatement:
+        'Chronic urban noise above 65dB destroys avian mating calls and bat echolocation, causing local pollinator collapse in urban parks.',
+      theGap:
+        'Ecologists conduct rare manual field surveys; noise sensors installed on city buildings can simultaneously monitor bioacoustic soundscapes.',
+      whoItAffects: 'Urban wildlife, city arborists, environmental research institutes.',
+      impactIfSolved: 'Guides urban tree planting and sound barrier placement to restore urban biodiversity corridors.'
+    },
+    feasibility: {
+      assessment:
+        'Applying BirdNET bioacoustic classifier models to nighttime audio spectrograms recorded by exterior noise sensors.',
+      suggestedStack: ['Python / TFLite', 'BirdNET', 'React Dashboard', 'PostGIS'],
+      firstStep: 'Run offline BirdNET model on sample 1-hour window recordings from quiet vs noisy parks.',
+      pitfallsAndChallenges: 'Distinguishing bird calls from squeaking vehicle brakes and sirens.'
+    },
+    existingSolutions: {
+      alternatives: [
+        { name: 'Manual Binocular Bird Counts', description: 'Done once a year during Audubon Christmas Bird Counts; zero continuous insight.' }
+      ],
+      whyTheyFallShort: 'Cannot measure daily correlation between human construction noise and animal departure.'
+    },
+    skillsNeeded: [
+      { skill: 'Data / ML', roleDescription: 'Integrate BirdNET TFLite model for automated bioacoustic detection', filledCount: 0, targetCount: 1 }
+    ],
+    prerequisites: [
+      {
+        targetId: 'problem-civic-noise-grid',
+        relationship: 'blocked_by',
+        note: 'Leverages continuous urban microphone nodes deployed on residential windows.'
+      }
+    ],
+    votes: { goodIdea: 172, feasible: 154, haveThisProblem: 68, wantToBuild: 41 },
+    userVotes: { goodIdea: true },
+    team: { status: 'open_for_builders', members: [] },
     discussions: []
   }
 ];

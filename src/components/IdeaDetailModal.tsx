@@ -344,8 +344,8 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({
                           className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-950/60 p-3 text-xs"
                         >
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20 uppercase">
-                              {prereq.relationship.replace(/_/g, ' ')}
+                            <span className="font-mono text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20 uppercase font-semibold">
+                              {prereq.relationship === 'blocked_by' ? 'Requires' : prereq.relationship === 'prerequisite_for' ? 'Unlocks' : prereq.relationship.replace(/_/g, ' ')}
                             </span>
                             <div>
                               <div className="font-semibold text-white">

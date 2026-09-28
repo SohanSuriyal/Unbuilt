@@ -7,8 +7,10 @@ import {
   saveUserSkills,
 } from './utils/storage';
 import { TopNav } from './components/TopNav';
-import { SkillFilterBar } from './components/SkillFilterBar';
+import { SkillFilterBar, CommonsViewLayout } from './components/SkillFilterBar';
 import { IdeaCard } from './components/IdeaCard';
+import { IndustryGroupedView } from './components/IndustryGroupedView';
+import { CompactIdeaListView } from './components/CompactIdeaListView';
 import { IdeaDetailModal } from './components/IdeaDetailModal';
 import { SubmitIdeaModal } from './components/SubmitIdeaModal';
 import { SkillConfigModal } from './components/SkillConfigModal';
@@ -34,16 +36,37 @@ export default function App() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'problem' | 'idea' | 'team_forming'>('all');
   const [filterByMySkills, setFilterByMySkills] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>('most_validated');
+  const [commonsLayout, setCommonsLayout] = useState<CommonsViewLayout>(() => {
+    try {
+      return (localStorage.getItem('unbuilt_commons_layout_v1') as CommonsViewLayout) || 'industry';
+    } catch {
+      return 'industry';
+    }
+  });
+
+  const handleCommonsLayoutChange = (layout: CommonsViewLayout) => {
+    setCommonsLayout(layout);
+    try {
+      localStorage.setItem('unbuilt_commons_layout_v1', layout);
+    } catch {}
+  };
 
   // Modals state
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
+  const [focusedGraphIdeaId, setFocusedGraphIdeaId] = useState<string | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [prefilledSubmitCategory, setPrefilledSubmitCategory] = useState<string | undefined>(undefined);
   const [isSkillModalOpen, setIsSkillModalOpen] = useState(false);
   const [isJoinTeamModalOpen, setIsJoinTeamModalOpen] = useState(false);
   const [ideaForTeamJoin, setIdeaForTeamJoin] = useState<Idea | null>(null);
   const [isLinkPrereqModalOpen, setIsLinkPrereqModalOpen] = useState(false);
   const [ideaForLinkPrereq, setIdeaForLinkPrereq] = useState<Idea | null>(null);
   const [isManifestoModalOpen, setIsManifestoModalOpen] = useState(false);
+
+  const handleViewInGraph = (idea: Idea) => {
+    setFocusedGraphIdeaId(idea.id);
+    setActiveView('graph');
+  };
 
   // Load from local storage on mount
   useEffect(() => {
@@ -324,9 +347,6 @@ export default function App() {
             <SkillFilterBar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              categories={categories}
               typeFilter={typeFilter}
               onTypeFilterChange={setTypeFilter}
               filterByMySkills={filterByMySkills}
@@ -335,6 +355,8 @@ export default function App() {
               onOpenSkillConfig={() => setIsSkillModalOpen(true)}
               sortBy={sortBy}
               onSortChange={setSortBy}
+              viewLayout={commonsLayout}
+              onViewLayoutChange={handleCommonsLayoutChange}
             />
 
             {/* Results count & active filters display */}
@@ -342,6 +364,16 @@ export default function App() {
               <div>
                 Showing <span className="font-mono text-white font-semibold tabular-nums">{filteredIdeas.length}</span>{' '}
                 {filteredIdeas.length === 1 ? 'submission' : 'submissions'}
+                {commonsLayout === 'industry' && (
+                  <span className="text-amber-400 ml-1.5 font-medium">
+                    · Grouped by Industry
+                  </span>
+                )}
+                {commonsLayout === 'compact' && (
+                  <span className="text-neutral-400 ml-1.5 font-medium">
+                    · Compact List
+                  </span>
+                )}
                 {filterByMySkills && (
                   <span className="text-amber-400 ml-1.5 font-medium">
                     (Filtered to your {userSkills.length} skills)
@@ -363,7 +395,7 @@ export default function App() {
               )}
             </div>
 
-            {/* Ideas Grid */}
+            {/* Ideas Rendering: Industry-wise vs Unified Grid vs Compact List */}
             {filteredIdeas.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-neutral-800 p-12 text-center">
                 <Lightbulb className="mx-auto h-8 w-8 text-neutral-600 mb-3" />
@@ -379,6 +411,25 @@ export default function App() {
                   <span>Donate an Idea for this topic</span>
                 </button>
               </div>
+            ) : commonsLayout === 'industry' ? (
+              <IndustryGroupedView
+                ideas={filteredIdeas}
+                userSkills={userSkills}
+                onSelectIdea={(selected) => setSelectedIdea(selected)}
+                onVote={handleVote}
+                onOpenSubmitForIndustry={(cat) => {
+                  setPrefilledSubmitCategory(cat);
+                  setIsSubmitModalOpen(true);
+                }}
+                onViewInGraph={handleViewInGraph}
+              />
+            ) : commonsLayout === 'compact' ? (
+              <CompactIdeaListView
+                ideas={filteredIdeas}
+                userSkills={userSkills}
+                onSelectIdea={(selected) => setSelectedIdea(selected)}
+                onVote={handleVote}
+              />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {filteredIdeas.map((idea) => (
@@ -388,6 +439,7 @@ export default function App() {
                     userSkills={userSkills}
                     onSelect={(selected) => setSelectedIdea(selected)}
                     onVote={handleVote}
+                    onViewInGraph={handleViewInGraph}
                   />
                 ))}
               </div>
@@ -403,6 +455,8 @@ export default function App() {
               setIdeaForLinkPrereq(idea);
               setIsLinkPrereqModalOpen(true);
             }}
+            onUpdateIdeas={updateIdeasAndPersist}
+            focusedIdeaId={focusedGraphIdeaId}
           />
         )}
 
@@ -474,9 +528,13 @@ export default function App() {
       {isSubmitModalOpen && (
         <SubmitIdeaModal
           isOpen={isSubmitModalOpen}
-          onClose={() => setIsSubmitModalOpen(false)}
+          onClose={() => {
+            setIsSubmitModalOpen(false);
+            setPrefilledSubmitCategory(undefined);
+          }}
           existingIdeas={ideas}
           onSubmitIdea={handleCreateIdea}
+          initialCategory={prefilledSubmitCategory}
         />
       )}
 

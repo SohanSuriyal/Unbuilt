@@ -1,13 +1,14 @@
 import React from 'react';
 import { Idea, IdeaVotes } from '../types';
 import { VoteControls } from './VoteControls';
-import { Users, Link2, ArrowRight } from 'lucide-react';
+import { Users, Link2, ArrowRight, Network } from 'lucide-react';
 
 interface IdeaCardProps {
   idea: Idea;
   userSkills: string[];
   onSelect: (idea: Idea) => void;
   onVote: (ideaId: string, voteKey: keyof IdeaVotes) => void;
+  onViewInGraph?: (idea: Idea) => void;
 }
 
 export const IdeaCard: React.FC<IdeaCardProps> = ({
@@ -15,6 +16,7 @@ export const IdeaCard: React.FC<IdeaCardProps> = ({
   userSkills,
   onSelect,
   onVote,
+  onViewInGraph,
 }) => {
   // Check how many required skills match the current user's profile
   const matchingSkills = idea.skillsNeeded.filter((sn) =>
@@ -76,6 +78,49 @@ export const IdeaCard: React.FC<IdeaCardProps> = ({
           <p className="text-xs text-neutral-400 italic line-clamp-2 leading-relaxed">
             "{idea.motivation.problemStatement}"
           </p>
+        </div>
+
+        {/* Dependency Graph Option (Placed above Roles & Skills Needed) */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onViewInGraph) {
+                onViewInGraph(idea);
+              } else {
+                onSelect(idea);
+              }
+            }}
+            className="w-full flex items-center justify-between gap-2 rounded-lg border border-sky-500/30 bg-sky-950/20 hover:bg-sky-900/40 hover:border-sky-400/60 p-2 text-left transition-all group/graph shadow-sm"
+            title={`Open ${idea.title} in the visual dependency graph`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="p-1 rounded bg-sky-500/20 text-sky-400 shrink-0">
+                <Network className="h-3.5 w-3.5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300">
+                  <span>Dependency Graph</span>
+                  {idea.prerequisites.length > 0 && (
+                    <span className="font-mono text-[9.5px] text-sky-400/90 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                      {idea.prerequisites.length} prerequisite{idea.prerequisites.length > 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10.5px] text-neutral-400 truncate">
+                  {idea.prerequisites.length > 0
+                    ? `Linked to prerequisite and downstream systems`
+                    : `Explore, link, or inject nodes on canvas`}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1 text-[11px] font-semibold text-sky-400 shrink-0 group-hover/graph:translate-x-0.5 transition-transform">
+              <span>View Graph</span>
+              <ArrowRight className="h-3 w-3" />
+            </div>
+          </button>
         </div>
 
         {/* Skills needed list with user skill match indicator */}

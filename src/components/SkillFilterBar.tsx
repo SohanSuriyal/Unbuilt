@@ -1,13 +1,12 @@
 import React from 'react';
-import { Search, SlidersHorizontal, Check, X, ArrowUpDown } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, X, ArrowUpDown, LayoutGrid, FolderTree, List } from 'lucide-react';
 import { SortOption } from '../types';
+
+export type CommonsViewLayout = 'industry' | 'grid' | 'compact';
 
 interface SkillFilterBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  selectedCategory: string;
-  onSelectCategory: (category: string) => void;
-  categories: string[];
   typeFilter: 'all' | 'problem' | 'idea' | 'team_forming';
   onTypeFilterChange: (type: 'all' | 'problem' | 'idea' | 'team_forming') => void;
   filterByMySkills: boolean;
@@ -16,14 +15,13 @@ interface SkillFilterBarProps {
   onOpenSkillConfig: () => void;
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
+  viewLayout: CommonsViewLayout;
+  onViewLayoutChange: (layout: CommonsViewLayout) => void;
 }
 
 export const SkillFilterBar: React.FC<SkillFilterBarProps> = ({
   searchQuery,
   onSearchChange,
-  selectedCategory,
-  onSelectCategory,
-  categories,
   typeFilter,
   onTypeFilterChange,
   filterByMySkills,
@@ -32,6 +30,8 @@ export const SkillFilterBar: React.FC<SkillFilterBarProps> = ({
   onOpenSkillConfig,
   sortBy,
   onSortChange,
+  viewLayout,
+  onViewLayoutChange,
 }) => {
   return (
     <div className="space-y-3.5 border-b border-neutral-800/80 pb-5">
@@ -56,8 +56,51 @@ export const SkillFilterBar: React.FC<SkillFilterBarProps> = ({
           )}
         </div>
 
-        {/* Sort dropdown */}
-        <div className="flex items-center gap-2">
+        {/* Sort dropdown and View Layout Toggle */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* View Layout Toggle: Industry-wise vs Unified Grid vs Compact List */}
+          <div className="flex items-center gap-1 p-1 bg-neutral-900/80 border border-neutral-800 rounded-lg">
+            <button
+              type="button"
+              onClick={() => onViewLayoutChange('industry')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                viewLayout === 'industry'
+                  ? 'bg-amber-400 text-neutral-950 shadow'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Group ideas by industry / domain"
+            >
+              <FolderTree className="h-3.5 w-3.5" />
+              <span>By Industry</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onViewLayoutChange('grid')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                viewLayout === 'grid'
+                  ? 'bg-amber-400 text-neutral-950 shadow'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Standard unified grid"
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span>All Grid</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onViewLayoutChange('compact')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                viewLayout === 'compact'
+                  ? 'bg-amber-400 text-neutral-950 shadow'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Compact scanner table"
+            >
+              <List className="h-3.5 w-3.5" />
+              <span>Compact</span>
+            </button>
+          </div>
+
           <div className="flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900/60 px-3 py-2 text-xs text-neutral-300">
             <ArrowUpDown className="h-3.5 w-3.5 text-neutral-400" />
             <span className="text-neutral-500">Sort:</span>
@@ -158,29 +201,6 @@ export const SkillFilterBar: React.FC<SkillFilterBarProps> = ({
             Edit Skills
           </button>
         </div>
-      </div>
-
-      {/* Categories scroller */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 text-xs">
-        <span className="text-neutral-500 shrink-0 text-[11px] font-medium uppercase tracking-wider mr-1">
-          Category:
-        </span>
-        {categories.map((cat) => {
-          const isSelected = selectedCategory === cat;
-          return (
-            <button
-              key={cat}
-              onClick={() => onSelectCategory(cat)}
-              className={`whitespace-nowrap shrink-0 rounded-md px-2.5 py-1 font-medium transition-colors ${
-                isSelected
-                  ? 'bg-neutral-200 text-neutral-950 font-semibold'
-                  : 'bg-neutral-900/60 text-neutral-400 border border-neutral-800/80 hover:border-neutral-700 hover:text-neutral-200'
-              }`}
-            >
-              {cat}
-            </button>
-          );
-        })}
       </div>
     </div>
   );

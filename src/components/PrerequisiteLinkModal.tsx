@@ -86,8 +86,8 @@ export const PrerequisiteLinkModal: React.FC<PrerequisiteLinkModalProps> = ({
               onChange={(e) => setRelationship(e.target.value as PrerequisiteLink['relationship'])}
               className="mt-1 w-full rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-xs text-neutral-200 focus:border-amber-400 focus:outline-none"
             >
-              <option value="blocked_by">Blocked by (Needs target idea built or solved first)</option>
-              <option value="prerequisite_for">Prerequisite for (Target idea depends on this)</option>
+              <option value="blocked_by">Requires (Needs target idea built or solved first)</option>
+              <option value="prerequisite_for">Unlocks (Target idea depends on this)</option>
               <option value="child_of">Child module of (Component or sub-system)</option>
               <option value="alternative_to">Alternative approach to (Different philosophical angle)</option>
               <option value="related">Synergistic / Related problem</option>
