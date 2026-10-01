@@ -457,6 +457,7 @@ export default function App() {
             }}
             onUpdateIdeas={updateIdeasAndPersist}
             focusedIdeaId={focusedGraphIdeaId}
+            onBackToCommons={() => setActiveView('commons')}
           />
         )}
 

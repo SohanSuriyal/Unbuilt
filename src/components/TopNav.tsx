@@ -32,27 +32,17 @@ export const TopNav: React.FC<TopNavProps> = ({
           </button>
         </div>
 
-        {/* Zone 2: 4 clean text navigation links */}
+        {/* Zone 2: Clean text navigation links */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <button
             onClick={() => onSelectView('commons')}
             className={`transition-colors focus:outline-none ${
-              activeView === 'commons'
+              activeView === 'commons' || activeView === 'graph'
                 ? 'text-white font-semibold border-b-2 border-amber-400 pb-0.5'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
             Idea Commons
-          </button>
-          <button
-            onClick={() => onSelectView('graph')}
-            className={`transition-colors focus:outline-none ${
-              activeView === 'graph'
-                ? 'text-white font-semibold border-b-2 border-amber-400 pb-0.5'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            Dependency Graph
           </button>
           <button
             onClick={() => onSelectView('teams')}
